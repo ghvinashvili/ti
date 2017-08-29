@@ -1,0 +1,103 @@
+<?php
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\taxonomy\Entity\Term;
+use Drupal\node\Entity\Node;
+
+/**
+ * Implements hook_form_alter().
+ */
+/**\
+ * @param $form
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ * @param $form_id
+ */
+function ti_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $node_pos = strpos($form_id,'node');
+  $count_node = strlen('node');
+  $get_node = substr($form_id,$node_pos,$count_node);
+
+  if($get_node == 'node' ) {
+    $form['actions']['publish']['#submit'][] = 'node_callback_submit_publish';
+  }
+
+}
+  /**
+   * @param $form
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   * @throws \Exception
+   */
+function node_callback_submit_publish(array $form, FormStateInterface $form_state) {
+
+  //filed collection machine names
+  $flmns = explode(',',\Drupal::config('ti.ti')->get('enter_taxonomy_field_machine_lable_name'));
+  // Taxonomy term machine names
+  $ttmns = explode(',',\Drupal::config('ti.ti')->get('enter_taxonomy_field_machine_name'));
+
+
+  $f_c_item_ids = [];
+  foreach ($flmns as $flmn ) {
+    $request = \Drupal::request()->request->get($flmn);
+    foreach ($request as $req) {
+      $f_c_item_ids[] = $req;
+    }
+  }
+
+
+
+  $target_ids = [];
+  foreach ($ttmns as $ttmn) {
+    foreach ($f_c_item_ids as $fc_item_id) {
+
+      @$pos = strpos($fc_item_id[$ttmn][0]['target_id'],' ');
+
+      if(@$pos) {
+        if(!empty($fc_item_id[$ttmn][0]['target_id'])) {
+
+          $target_ids[] = substr($fc_item_id[$ttmn][0]['target_id'],0,$pos);
+
+        }
+      }else {
+
+        if(!empty($fc_item_id[$ttmn][0]['target_id'])) {
+
+          $target_ids[] = $fc_item_id[$ttmn][0]['target_id'];
+        }
+      }
+
+    }
+  }
+
+  $result = [];
+  foreach ($target_ids as $target_id) {
+
+    $tid = \Drupal::database()->select('taxonomy_term_field_data','tt')->fields('tt',['tid']);
+
+    $tid->condition('name',$target_ids);
+
+    $result[] = $tid->execute()->fetchField();
+  }
+
+
+  $array = array();
+  foreach ($result as $tid) {
+    $array[] = [
+      'nid' => (int)$form_state->getValue('nid'),
+      'tid' => (int)$tid,
+      'status' => 1,
+      'sticky' => 0,
+      'created' => REQUEST_TIME
+    ];
+  }
+
+  $t_index = \Drupal::database()->insert('taxonomy_index')
+    ->fields(['nid','tid','status','sticky','created']);
+  foreach ($array as $arr) {
+    $t_index->values($arr);
+  }
+  $t_index->execute();
+
+}
+
+
+

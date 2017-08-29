@@ -1,0 +1,6 @@
+name: Taxonomy index
+description: This is a taxonomy index module
+package: Custom
+core: 8.x
+type: module
+

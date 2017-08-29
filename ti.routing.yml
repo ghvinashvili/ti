@@ -1,0 +1,11 @@
+
+ti.ti_form:
+  path: '/admin/config/ti/ti'
+  defaults:
+    _form: '\Drupal\ti\Form\TiForm'
+    _title: 'Field collection taxonomy index'
+  requirements:
+    _permission: 'access administration pages'
+  options:
+    _admin_route: TRUE
+

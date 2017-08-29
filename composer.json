@@ -1,0 +1,14 @@
+{
+  "name": "drupal/ti",
+  "type": "drupal-module",
+  "description": "Field Collection taxonomy index module",
+  "keywords": ["Drupal"],
+  "license": "GPL-2.0+",
+  "homepage": "https://www.drupal.org/project/ti",
+  "minimum-stability": "dev",
+  "support": {
+    "issues": "http://drupal.org/project/issues/ti",
+    "source": "http://cgit.drupalcode.org/ti"
+  },
+  "require": { }
+}
