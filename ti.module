@@ -73,7 +73,7 @@ function node_callback_submit_publish(array $form, FormStateInterface $form_stat
 
     $tid = \Drupal::database()->select('taxonomy_term_field_data','tt')->fields('tt',['tid']);
 
-    $tid->condition('name',$target_ids);
+    $tid->condition('name',$target_id);
 
     $result[] = $tid->execute()->fetchField();
   }
