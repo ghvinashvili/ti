@@ -49,7 +49,7 @@ function node_callback_submit_publish(array $form, FormStateInterface $form_stat
   foreach ($ttmns as $ttmn) {
     foreach ($f_c_item_ids as $fc_item_id) {
 
-      @$pos = strpos($fc_item_id[$ttmn][0]['target_id'],' ');
+      @$pos = strrpos($fc_item_id[$ttmn][0]['target_id'],' ');
 
       if(@$pos) {
         if(!empty($fc_item_id[$ttmn][0]['target_id'])) {
