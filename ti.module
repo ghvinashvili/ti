@@ -22,11 +22,11 @@ function ti_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   }
 
 }
-  /**
-   * @param $form
-   * @param \Drupal\Core\Form\FormStateInterface $form_state
-   * @throws \Exception
-   */
+/**
+ * @param $form
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ * @throws \Exception
+ */
 function node_callback_submit_publish(array $form, FormStateInterface $form_state) {
 
   //filed collection machine names
@@ -44,29 +44,29 @@ function node_callback_submit_publish(array $form, FormStateInterface $form_stat
   }
 
 
-
   $target_ids = [];
   foreach ($ttmns as $ttmn) {
     foreach ($f_c_item_ids as $fc_item_id) {
 
-      @$pos = strrpos($fc_item_id[$ttmn][0]['target_id'],' ');
+      @$pos = strrpos($fc_item_id[$ttmn][0]['target_id'],'(');
 
       if(@$pos) {
         if(!empty($fc_item_id[$ttmn][0]['target_id'])) {
 
-          $target_ids[] = substr($fc_item_id[$ttmn][0]['target_id'],0,$pos);
+          $target_ids[] = trim(substr($fc_item_id[$ttmn][0]['target_id'],0,$pos));
 
         }
       }else {
 
         if(!empty($fc_item_id[$ttmn][0]['target_id'])) {
 
-          $target_ids[] = $fc_item_id[$ttmn][0]['target_id'];
+          $target_ids[] = trim($fc_item_id[$ttmn][0]['target_id']);
         }
       }
 
     }
   }
+
 
   $result = [];
   foreach ($target_ids as $target_id) {
@@ -77,6 +77,8 @@ function node_callback_submit_publish(array $form, FormStateInterface $form_stat
 
     $result[] = $tid->execute()->fetchField();
   }
+
+
 
 
   $array = array();
@@ -98,6 +100,3 @@ function node_callback_submit_publish(array $form, FormStateInterface $form_stat
   $t_index->execute();
 
 }
-
-
-
